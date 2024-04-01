@@ -14,7 +14,7 @@ class ProjectController extends Controller
     public function index()
     {
         $projects = Project::all();
-        return view('pages.projects.index', compact('projects'));
+        return view('pages.dashboard.projects.index', compact('projects'));
     }
 
     /**
@@ -22,7 +22,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        return view('pages.projects.create');
+        return view('pages.dashboard.projects.create');
     }
 
     /**
@@ -50,7 +50,7 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        //
+        return view('pages.dashboard.projects.edit', compact('project'));
     }
 
     /**
@@ -58,7 +58,11 @@ class ProjectController extends Controller
      */
     public function update(UpdateProjectRequest $request, Project $project)
     {
-        //
+        $val_data = $request->validated();
+        $slug = Project::generateSlug($request->title);
+        $val_data['slug'] = $slug;
+        $project->update($val_data);
+        return redirect()->route('dashboard.projects.index');
     }
 
     /**
@@ -66,6 +70,7 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
-        //
+        $project->delete();
+        return redirect()->route('dashboard.projects.index');
     }
 }
